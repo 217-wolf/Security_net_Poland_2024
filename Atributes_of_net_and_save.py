@@ -13,7 +13,7 @@ from networkx.readwrite import json_graph
 KATALOG_PROJEKTU = Path(__file__).resolve().parent
 SCIEZKA_GRANIC = KATALOG_PROJEKTU / "Podstawa_grafu" / "A02_Granice_powiatow.shp"
 SCIEZKA_ATRYBUTOW = KATALOG_PROJEKTU / "Processed_data" / "powiaty_atrybuty.csv"
-SCIEZKA_GRAFU_JSON = KATALOG_PROJEKTU / "Processed_data" / "graf_powiatow.json"
+SCIEZKA_GRAFU_JSON = KATALOG_PROJEKTU / "Graf_reprezentacja" / "graf_powiatow.json"
 
 
 KOLUMNA_KODU_SHP = None

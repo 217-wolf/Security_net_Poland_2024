@@ -175,15 +175,16 @@ if __name__ == "__main__":
     print(f"Wczytano {G.number_of_nodes()} węzłów.")
     print(f"Wczytano {G.number_of_edges()} krawędzi.")
     print()
-    
-    sciezka =najkrótsza_sciezka_po_atrybucie(G, "powiat nowosolski", "powiat wrocławski")
+    powiat_s = "powiat zielonogórski"
+    powiat_k = "powiat gryficki"
+    sciezka =najkrótsza_sciezka_po_atrybucie(G, powiat_s, powiat_k)
     print(sciezka,len(sciezka))
     print()
 
     print(analiza_eulerowska(G))
     print()
     
-    powiat_a = "powiat wrocławski"
-    powiat_b = "powiat oławski"
+    powiat_a = "powiat zielonogórski"
+    powiat_b = "powiat warszawa"
     print("Maksymalny przepływ między powiatami: ",powiat_a,powiat_b)
     print(maksymalny_przeplyw(G, powiat_a,powiat_b ))
