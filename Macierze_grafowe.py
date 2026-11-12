@@ -24,8 +24,7 @@ def generuj_macierze(sciezka_json, sciezka_wynikow):
         for u, v in lacza]
 
     # Macierz sąsiedztwa
-    macierz_sasiedztwa = nx.to_numpy_array(
-        graf, nodelist=wezly, weight=None, dtype=int)
+    macierz_sasiedztwa = nx.to_numpy_array(graf, nodelist=wezly, weight=None, dtype=int)
 
     # Macierz incydencji
     indeksy_wezlow = {v: i for i, v in enumerate(wezly)}
@@ -34,6 +33,7 @@ def generuj_macierze(sciezka_json, sciezka_wynikow):
 
     for j, (u, v) in enumerate(lacza):
         macierz_incydencji[indeksy_wezlow[u], j] = 2 if u == v else 1
+
         if u != v:
             macierz_incydencji[indeksy_wezlow[v], j] = 1
 

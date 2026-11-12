@@ -6,7 +6,7 @@ from networkx.readwrite import json_graph
 import pandas as pd
 import heapq
 
-SCIEZKA_GRAFU = (Path(__file__).resolve().parent/"Processed_data"/ "graf_powiatow.json")
+SCIEZKA_GRAFU = (Path(__file__).resolve().parent/"Graf_reprezentacja"/ "graf_powiatow.json")
 
 
 def wczytaj_graf() -> nx.Graph:
