@@ -18,8 +18,8 @@ def nazwa(wezel):
     """zwrócenie nazwy węzła sieci"""
     return graf.nodes[wezel].get("Nazwa", graf.nodes[wezel].get("nazwa", str(wezel)))
 
-PROG_NIEBEZPIECZENSTWA = 12.5
-PROG_BEZPIECZENSTWA = 18
+PROG_NIEBEZPIECZENSTWA = 33
+PROG_BEZPIECZENSTWA = 40
 
 
 # Częśc wykonawcza
@@ -28,12 +28,12 @@ print("Sprawdzenie komunikacji grafu sieci bezpiecznych i sieci przestępczych")
 wskaznik_p = {wezel: float(atrybuty["przestepstwa_na_1000"]) for wezel, atrybuty in graf.nodes(data=True)}
 przepustowosci = {wezel: oblicz_przepustowosc(wskaznik) for wezel, wskaznik in wskaznik_p.items()}
 
-#Podział na kategorie
-wezly_przestepcze = {wezel for wezel, wskaznik_p in wskaznik_p.items()
-    if wskaznik_p < PROG_NIEBEZPIECZENSTWA}
-
-wezly_bezpieczne = {wezel for wezel, wskaznik_p in wskaznik_p.items()
-    if wskaznik_p > PROG_BEZPIECZENSTWA}
+# Podział na kategorie
+wezly_przestepcze = {wezel for wezel, przepustowosc in przepustowosci.items()
+    if przepustowosc < PROG_NIEBEZPIECZENSTWA}
+    
+wezly_bezpieczne = {wezel for wezel, przepustowosc in przepustowosci.items()
+    if przepustowosc > PROG_BEZPIECZENSTWA}
 
 wezly_posrednie = (set(graf.nodes) - wezly_przestepcze - wezly_bezpieczne)
 
@@ -64,7 +64,8 @@ def miary_sieci(g):
         wierzcholkowa = nx.node_connectivity(najwieksza)
         krawedziowa = nx.edge_connectivity(najwieksza)
     else:
-        pass
+        wierzcholkowa = 0
+        krawedziowa = 0
 
     kliki = list(nx.find_cliques(g))
     najwieksza_klika = max(kliki, key=len, default=[])
@@ -141,8 +142,8 @@ pozycje_grafu = nx.spring_layout(graf, seed=30)
 katalog_grafik = Path("Graf_reprezentacja")
 katalog_grafik.mkdir(parents=True, exist_ok=True)
 
-scenariusze = [("Usunięcie bezpiecznych węzłów",wezly_bezpieczne,wezly_przestepcze,"Usunięcie_bezpiecznych.png"),
-("Usunięcie niebezpiecznych węzłów",wezly_przestepcze,wezly_bezpieczne,"Usunięcie_niebezpiecznych.png")]
+scenariusze = [("\nUsunięcie bezpiecznych węzłów",wezly_bezpieczne,wezly_przestepcze,"Usunięcie_bezpiecznych.png"),
+("\nUsunięcie niebezpiecznych węzłów",wezly_przestepcze,wezly_bezpieczne,"Usunięcie_niebezpiecznych.png")]
 
 for tytul, wezly_usuwane, wezly_docelowe, plik in scenariusze:
     print(tytul)
@@ -161,16 +162,26 @@ for tytul, wezly_usuwane, wezly_docelowe, plik in scenariusze:
         (f"{tytul}\nProgi: niebezpieczne < {PROG_NIEBEZPIECZENSTWA}\nbezpieczne > {PROG_BEZPIECZENSTWA}"),katalog_grafik / plik)
 
 # analiza wycinka
-PROG_NIEBEZPIECZENSTWA += 5.5
-PROG_BEZPIECZENSTWA -= 1
-if PROG_BEZPIECZENSTWA<PROG_NIEBEZPIECZENSTWA:
-    PROG_NIEBEZPIECZENSTWA = PROG_BEZPIECZENSTWA
-if PROG_NIEBEZPIECZENSTWA <= 0:
-    PROG_BEZPIECZENSTWA = PROG_NIEBEZPIECZENSTWA = 10
-print(f"Próg bezpieczeństwa {PROG_BEZPIECZENSTWA} i przestępczości {PROG_NIEBEZPIECZENSTWA}")
+PROG_NIEBEZPIECZENSTWA = 33
+PROG_BEZPIECZENSTWA = 35
 
-wezly_przestepcze = {wezel for wezel, wskaznik in wskaznik_p.items() if wskaznik > PROG_NIEBEZPIECZENSTWA}
-wezly_bezpieczne = {wezel for wezel, wskaznik in wskaznik_p.items() if wskaznik < PROG_BEZPIECZENSTWA}
+if PROG_BEZPIECZENSTWA < PROG_NIEBEZPIECZENSTWA:
+    PROG_NIEBEZPIECZENSTWA, PROG_BEZPIECZENSTWA = PROG_BEZPIECZENSTWA, PROG_NIEBEZPIECZENSTWA
+
+if PROG_NIEBEZPIECZENSTWA <= 0:
+    PROG_NIEBEZPIECZENSTWA = 10
+if PROG_BEZPIECZENSTWA <= 0:
+    PROG_BEZPIECZENSTWA = 10
+
+print(f"Próg niebezpieczeństwa: {PROG_NIEBEZPIECZENSTWA}")
+print(f"Próg bezpieczeństwa: {PROG_BEZPIECZENSTWA}")
+
+wezly_przestepcze = {wezel for wezel, wskaznik in przepustowosci.items()
+    if wskaznik < PROG_NIEBEZPIECZENSTWA}
+
+wezly_bezpieczne = {wezel for wezel, wskaznik in przepustowosci.items()
+    if wskaznik > PROG_BEZPIECZENSTWA}
+
 wezly_posrednie = set(graf.nodes) - wezly_przestepcze - wezly_bezpieczne
 
 def wizualizuj_onecat_graf(g, tytul, kolor, plik):
